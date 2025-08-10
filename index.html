@@ -3,72 +3,46 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Omni‑Man GIF Wall</title>
-  <meta name="description" content="A fast, single-file gallery showing only Omni‑Man GIFs from Invincible, loaded from local GitHub repo folder." />
+  <title>Omni-Man GIF Wall</title>
   <style>
-    :root{
-      --bg:#0f1115; --fg:#e5e7eb; --muted:#9aa1ad; --accent:#d4af37; --card:#151923; --chip:#1b2130;
-      --gap:14px; --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.25);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;background:linear-gradient(180deg,#0c0f14,#121825 35%,#0f1115);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Segoe UI Emoji,Apple Color Emoji,Noto Color Emoji,sans-serif}
-    header{position:sticky;top:0;z-index:5;background:rgba(13,16,22,.78);backdrop-filter: blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}
-    .bar{max-width:1200px;margin:0 auto;padding:14px;display:flex;gap:12px;align-items:center}
-    .title{font-weight:800;letter-spacing:.2px}
-    .title span{display:inline-block;background:linear-gradient(90deg,#e6dfc6, #d4af37 55%, #f1e7b0);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .chip{padding:6px 10px;border-radius:999px;background:var(--chip);font-size:.82rem;color:var(--muted);border:1px solid rgba(255,255,255,.06)}
-    .controls{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
-    button{appearance:none;border:0;cursor:pointer;border-radius:12px;padding:10px 12px;background:#222b3d;color:#e9eef8;box-shadow:var(--shadow);font-weight:600}
-    button:hover{filter:brightness(1.08)}
-    input[type="search"]{flex:1;min-width:160px;max-width:320px;border:1px solid rgba(255,255,255,.08);background:#121826;color:var(--fg);padding:10px 12px;border-radius:12px;outline:none}
-
-    main{max-width:1200px;margin:18px auto;padding:0 14px 40px}
-    .grid{column-count:1;column-gap:var(--gap)}
+    body{margin:0;background:#0f1115;color:#e5e7eb;font-family:sans-serif}
+    header{position:sticky;top:0;background:rgba(13,16,22,.9);padding:14px;display:flex;gap:12px;align-items:center}
+    .title{font-weight:800;color:#d4af37}
+    .chip{padding:6px 10px;border-radius:999px;background:#1b2130;font-size:.82rem;color:#9aa1ad}
+    input[type="search"]{flex:1;min-width:160px;max-width:320px;background:#121826;color:#e5e7eb;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+    main{max-width:1200px;margin:18px auto;padding:0 14px}
+    .grid{column-count:1;column-gap:14px}
     @media(min-width:640px){.grid{column-count:2}}
     @media(min-width:900px){.grid{column-count:3}}
     @media(min-width:1200px){.grid{column-count:4}}
-
-    .card{break-inside:avoid;background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);overflow:hidden;margin:0 0 var(--gap)}
+    .card{break-inside:avoid;background:#151923;border:1px solid rgba(255,255,255,.06);border-radius:18px;overflow:hidden;margin:0 0 14px}
     .card img{display:block;width:100%;height:auto}
-    .meta{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid rgba(255,255,255,.06);font-size:.82rem;color:var(--muted)}
-    .meta .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
-    .empty{opacity:.75;text-align:center;padding:40px}
-    .footer{max-width:1200px;margin:0 auto;padding:14px;color:#98a2b3;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-    a{color:#d7c782}
+    .meta{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid rgba(255,255,255,.06);font-size:.82rem;color:#9aa1ad}
+    .meta .dot{width:6px;height:6px;border-radius:50%;background:#d4af37}
+    .empty{text-align:center;padding:40px;opacity:.75}
   </style>
 </head>
 <body>
   <header>
-    <div class="bar">
-      <div class="title">Only <span>Omni‑Man</span> GIFs</div>
-      <div class="chip" id="count">0 GIFs</div>
-      <input id="q" type="search" placeholder="Filter… (e.g. punch, glare, meme)" />
-      <div class="controls">
-        <button id="shuffle">Shuffle</button>
-      </div>
-    </div>
+    <div class="title">Only Omni-Man GIFs</div>
+    <div class="chip" id="count">0 GIFs</div>
+    <input id="q" type="search" placeholder="Filter…" />
+    <button id="shuffle">Shuffle</button>
   </header>
 
   <main>
     <div id="grid" class="grid" aria-live="polite"></div>
-    <div id="empty" class="empty" hidden>
-      <p>Nothing matches that filter. Try another keyword.</p>
-    </div>
+    <div id="empty" class="empty" hidden>Nothing matches that filter.</div>
   </main>
-
-  <footer class="footer">
-    <span>GIFs are loaded from the <code>/gifs/</code> folder in this GitHub Pages site.</span>
-  </footer>
 
   <script>
     const gifNames = [
-      "Realism","Twerking","Searching","Learning","Art","Hello","Missing","Idol","Chat","Cute","GoodNight","Clap","Madison","Context","PleaseNo","Acting","Nani","Adios","Fine","Pixels","Choice","Contemplating","Turns","Typo","Nonsense","RickRoll","Toys","Tech","Swearing","Danielle","Love","Autism","Nemia","Cooked","Jose","Surprise","Birth","Where","Mistake","Anime","Butt","Exhausted","Family","Time","Why","Please","Stfu","MyWife","Early","Natural","Look","Ready","Can’t","Phone","Neat","Sure","Think","Dance","Follow","Punches","Clapping","World","Fly","Beating"
+      "Realism","Twerking","Searching","Learning","Art","Hello","Missing","Idol","Chat","Cute","GoodNight","Clap","Madison","Context","PleaseNo","Acting","Nani","Adios","Fine","Pixels","Choice","Contemplating","Turns","Typo","Nonsense","RickRoll","Toys","Tech","Swearing","Danielle","Love","Autism","Nemia","Cooked","Jose","Surprise","Birth","Where","Mistake","Anime","Butt","Exhausted","Family","Time","Why","Please","Stfu","MyWife","Early","Natural","Look","Ready","Cant","Phone","Neat","Sure","Think","Dance","Follow","Punches","Clapping","World","Fly","Beating"
     ];
 
     const GIFS = gifNames.map(name => ({
-      url: `gifs/${name}.gif`,
-      tag: name
+      tag: name,
+      url: `gifs/${name}.gif`
     }));
 
     const grid = document.getElementById('grid');
@@ -86,14 +60,13 @@
 
     function render(list){
       grid.innerHTML = '';
-      list.forEach((g,idx)=>{
+      list.forEach((g)=>{
         const card = document.createElement('article');
         card.className = 'card';
         const img = document.createElement('img');
         img.loading = 'lazy';
-        img.decoding = 'async';
-        img.alt = `${g.tag} GIF`;
         img.src = g.url;
+        img.alt = `${g.tag} GIF`;
         img.onerror = () => { card.remove(); updateCount(); };
         const meta = document.createElement('div');
         meta.className = 'meta';
@@ -120,7 +93,6 @@
       shuffle(GIFS);
       applyFilter();
     });
-
     q.addEventListener('input', applyFilter);
 
     render(GIFS);
