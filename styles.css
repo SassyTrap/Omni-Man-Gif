@@ -1,0 +1,308 @@
+:root {
+  --bg-1: #0b1020;
+  --bg-2: #121a33;
+  --panel: #161c33;
+  --text: #e6ebff;
+  --muted: #98a0c0;
+  --danger: #ff4d4d;
+  --ok: #34d399;
+  --accent: #7c3aed;
+  --fire: #ff6a00;
+  --water: #2ca5ff;
+  --grass: #26d07c;
+  --neutral: #c7d2fe;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(1200px 600px at 80% -10%, #1c274f33, transparent),
+              radial-gradient(1200px 600px at 20% 110%, #1c274f33, transparent),
+              linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+}
+
+#game {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  overflow: hidden;
+}
+
+#top-bar {
+  padding: 12px 16px 4px;
+}
+
+#level-label {
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+#enemy-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#enemy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#demon-sprite {
+  width: 120px;
+  height: 96px;
+}
+
+#demon-sprite svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#enemy-type-badge {
+  font-size: 20px;
+  background: #ffffff14;
+  border: 1px solid #ffffff22;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+.hud.health {
+  flex: 1;
+}
+
+.health-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.health-bar {
+  height: 14px;
+  width: 100%;
+  background: #ffffff14;
+  border: 1px solid #ffffff22;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.health-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #6ee7b7, #10b981);
+}
+
+.health-points {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#playfield {
+  position: relative;
+  flex: 1;
+  min-height: 220px;
+  margin: 6px 12px;
+  border-radius: 16px;
+  border: 1px dashed #ffffff2a;
+  background: linear-gradient(180deg, #111735 0%, #0d142e 100%);
+  overflow: hidden;
+}
+
+#bottom-hud {
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, #0e1533 0%, #0a112b 100%);
+  border-top: 1px solid #ffffff11;
+}
+
+#prompt-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+#prompt-input {
+  flex: 1;
+  min-height: 44px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #ffffff20;
+  background: #0f1533;
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+}
+
+#prompt-input.has-banned {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 4px #ff4d4d22;
+}
+
+#send-btn {
+  min-width: 86px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #8b5cf6, #6d28d9);
+  color: white;
+  font-weight: 700;
+  border: none;
+}
+
+#send-btn[disabled] {
+  opacity: 0.6;
+}
+
+#banned-message {
+  min-height: 18px;
+  margin-top: 4px;
+  color: var(--danger);
+  font-size: 12px;
+}
+
+/* Projectiles */
+.projectile {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  border: 2px solid #ffffff40;
+  box-shadow: 0 10px 25px #00000066, inset 0 0 20px #ffffff22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.projectile .label {
+  padding: 4px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 6px #000b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 90%;
+  text-align: center;
+}
+
+.projectile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  filter: saturate(1.1) contrast(1.05);
+}
+
+.element-fire { background: radial-gradient(60px 60px at 30% 20%, #ffd29a, transparent 60%), linear-gradient(180deg, #ff7a18, #d8342a); }
+.element-water { background: radial-gradient(60px 60px at 30% 20%, #b8ebff, transparent 60%), linear-gradient(180deg, #2ca5ff, #1849ff); }
+.element-grass { background: radial-gradient(60px 60px at 30% 20%, #caffc8, transparent 60%), linear-gradient(180deg, #36e28d, #0f9d58); }
+.element-neutral { background: radial-gradient(60px 60px at 30% 20%, #e0e7ff, transparent 60%), linear-gradient(180deg, #a5b4fc, #6366f1); }
+
+/* Explosion */
+.explosion {
+  position: absolute;
+  pointer-events: none;
+  width: 8px;
+  height: 8px;
+}
+
+.explosion .ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  transform: translate(-50%, -50%) scale(0.2);
+  opacity: 1;
+  animation: explode 550ms ease-out forwards;
+  box-shadow: 0 0 30px #fff;
+}
+
+.explosion .ring.r2 { animation-delay: 80ms; border-color: #ffee58; box-shadow: 0 0 30px #ffee58; }
+.explosion .ring.r3 { animation-delay: 140ms; border-color: #ff7043; box-shadow: 0 0 30px #ff7043; }
+
+@keyframes explode {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+  70% { opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+}
+
+/* End overlay */
+#end-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #0009;
+}
+
+#end-card {
+  background: var(--panel);
+  border: 1px solid #ffffff22;
+  border-radius: 16px;
+  padding: 20px;
+  width: min(520px, 90vw);
+  text-align: center;
+  box-shadow: 0 20px 40px #000a;
+}
+
+#end-title {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+
+#restart-btn {
+  min-width: 140px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #34d399, #059669);
+  color: white;
+  font-weight: 700;
+  border: none;
+}
+
+/* Toast */
+#toast {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  transform: translateX(-50%);
+  background: #000c;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+#toast.show { opacity: 1; }
+
+/* Small screens tweaks */
+@media (max-width: 420px) {
+  #demon-sprite { width: 92px; height: 76px; }
+  .projectile { width: 64px; height: 64px; }
+}
