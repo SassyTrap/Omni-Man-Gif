@@ -217,6 +217,9 @@
     const pPct = Math.round((playerHP / PLAYER_MAX_HP) * 100);
     enemyFill.style.width = `${ePct}%`;
     playerFill.style.width = `${pPct}%`;
+    playerFill.style.background = healthGradient(pPct);
+    enemyPts.style.color = ePct < 30 ? getCssVar("--danger") : getCssVar("--muted");
+    playerPts.style.color = pPct < 30 ? getCssVar("--danger") : getCssVar("--muted");
     enemyPts.textContent = `${enemyHP} / ${ENEMY_MAX_HP}`;
     playerPts.textContent = `${playerHP} / ${PLAYER_MAX_HP}`;
   }
@@ -281,6 +284,11 @@
   function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
   function clearChildren(node) { while (node.firstChild) node.removeChild(node.firstChild); }
   function getCssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || "#fff"; }
+
+  function healthGradient(pct) {
+    const hue = (pct / 100) * 120;
+    return `linear-gradient(90deg, hsl(${hue}, 70%, 50%), hsl(${hue}, 70%, 65%))`;
+  }
 
   function showToast(message) {
     toast.textContent = message;
