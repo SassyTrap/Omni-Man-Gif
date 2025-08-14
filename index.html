@@ -1,101 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Omni-Man GIF Wall</title>
-  <style>
-    body{margin:0;background:#0f1115;color:#e5e7eb;font-family:sans-serif}
-    header{position:sticky;top:0;background:rgba(13,16,22,.9);padding:14px;display:flex;gap:12px;align-items:center}
-    .title{font-weight:800;color:#d4af37}
-    .chip{padding:6px 10px;border-radius:999px;background:#1b2130;font-size:.82rem;color:#9aa1ad}
-    input[type="search"]{flex:1;min-width:160px;max-width:320px;background:#121826;color:#e5e7eb;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.08)}
-    main{max-width:1200px;margin:18px auto;padding:0 14px}
-    .grid{column-count:1;column-gap:14px}
-    @media(min-width:640px){.grid{column-count:2}}
-    @media(min-width:900px){.grid{column-count:3}}
-    @media(min-width:1200px){.grid{column-count:4}}
-    .card{break-inside:avoid;background:#151923;border:1px solid rgba(255,255,255,.06);border-radius:18px;overflow:hidden;margin:0 0 14px}
-    .card img{display:block;width:100%;height:auto}
-    .meta{display:flex;align-items:center;gap:10px;padding:10px;border-top:1px solid rgba(255,255,255,.06);font-size:.82rem;color:#9aa1ad}
-    .meta .dot{width:6px;height:6px;border-radius:50%;background:#d4af37}
-    .empty{text-align:center;padding:40px;opacity:.75}
-  </style>
-</head>
-<body>
-  <header>
-    <div class="title">Only Omni-Man GIFs</div>
-    <div class="chip" id="count">0 GIFs</div>
-    <input id="q" type="search" placeholder="Filter…" />
-    <button id="shuffle">Shuffle</button>
-  </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Elemental Prompt Duel — Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="game" class="column">
+      <header id="top-bar">
+        <div id="level-label">Demo Level</div>
+        <div id="enemy-area">
+          <div id="enemy">
+            <div id="demon-sprite" aria-label="Demon" role="img">
+              <!-- Simple inline demon SVG -->
+              <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="demonGrad" x1="0" x2="1" y1="0" y2="1">
+                    <stop offset="0%" stop-color="#3a0d0d" />
+                    <stop offset="100%" stop-color="#5a0f0f" />
+                  </linearGradient>
+                </defs>
+                <!-- Horns -->
+                <path d="M45 30 L65 5 L75 40 Z" fill="#2a0202" />
+                <path d="M155 30 L135 5 L125 40 Z" fill="#2a0202" />
+                <!-- Head -->
+                <ellipse cx="100" cy="70" rx="70" ry="55" fill="url(#demonGrad)" stroke="#000" stroke-width="2" />
+                <!-- Eyes -->
+                <ellipse cx="75" cy="65" rx="12" ry="10" fill="#ff3b3b" />
+                <ellipse cx="125" cy="65" rx="12" ry="10" fill="#ff3b3b" />
+                <circle cx="76" cy="65" r="4" fill="#000" />
+                <circle cx="124" cy="65" r="4" fill="#000" />
+                <!-- Mouth -->
+                <path d="M70 95 Q100 115 130 95" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round" />
+                <!-- Body shadow -->
+                <ellipse cx="100" cy="140" rx="45" ry="8" fill="#000" opacity="0.25" />
+              </svg>
+            </div>
+            <div id="enemy-type-badge" title="Enemy type"><span id="enemy-type-emoji">🔥</span></div>
+          </div>
+          <div class="hud health">
+            <div class="health-label">Enemy</div>
+            <div class="health-bar" id="enemy-health-bar">
+              <div class="health-fill" id="enemy-health-fill" style="width: 100%"></div>
+            </div>
+            <div class="health-points" id="enemy-health-points">100 / 100</div>
+          </div>
+        </div>
+      </header>
 
-  <main>
-    <div id="grid" class="grid" aria-live="polite"></div>
-    <div id="empty" class="empty" hidden>Nothing matches that filter.</div>
-  </main>
+      <main id="playfield" aria-live="polite" aria-label="Battlefield"></main>
 
-  <script>
-    const gifNames = [
-      "Realism","Twerking","Searching","Learning","Art","Hello","Missing","Idol","Chat","Cute","GoodNight","Clap","Madison","Context","PleaseNo","Acting","Nani","Adios","Fine","Pixels","Choice","Contemplating","Turns","Typo","Nonsense","RickRoll","Toys","Tech","Swearing","Danielle","Love","Autism","Nemia","Cooked","Jose","Surprise","Birth","Where","Mistake","Anime","Butt","Exhausted","Family","Time","Why","Please","Stfu","MyWife","Early","Natural","Look","Ready","Cant","Phone","Neat","Sure","Think","Dance","Follow","Punches","Clapping","World","Fly","Beating"
-    ];
+      <footer id="bottom-hud">
+        <div class="hud row">
+          <div class="health">
+            <div class="health-label">Player</div>
+            <div class="health-bar" id="player-health-bar">
+              <div class="health-fill" id="player-health-fill" style="width: 100%"></div>
+            </div>
+            <div class="health-points" id="player-health-points">100 / 100</div>
+          </div>
+        </div>
 
-    const GIFS = gifNames.map(name => ({
-      tag: name,
-      url: `gifs/${name}.gif`
-    }));
+        <form id="prompt-form" autocomplete="off">
+          <input id="prompt-input" type="text" inputmode="text" placeholder="Type a prompt to summon an image..." maxlength="120" aria-label="Prompt" />
+          <button id="send-btn" type="submit">Send</button>
+        </form>
+        <div id="banned-message" aria-live="assertive"></div>
+      </footer>
 
-    const grid = document.getElementById('grid');
-    const count = document.getElementById('count');
-    const empty = document.getElementById('empty');
-    const q = document.getElementById('q');
+      <div id="end-overlay" hidden>
+        <div id="end-card">
+          <div id="end-title"></div>
+          <button id="restart-btn" type="button">Play again</button>
+        </div>
+      </div>
 
-    function shuffle(arr){
-      for(let i=arr.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [arr[i],arr[j]] = [arr[j],arr[i]];
-      }
-      return arr;
-    }
+      <div id="toast" aria-live="polite"></div>
+    </div>
 
-    function render(list){
-      grid.innerHTML = '';
-      list.forEach((g)=>{
-        const card = document.createElement('article');
-        card.className = 'card';
-        const img = document.createElement('img');
-        img.loading = 'lazy';
-        img.src = g.url;
-        img.alt = `${g.tag} GIF`;
-        img.onerror = () => { card.remove(); updateCount(); };
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-        meta.innerHTML = `<span class="dot"></span><span>${g.tag}</span>`;
-        card.appendChild(img);
-        card.appendChild(meta);
-        grid.appendChild(card);
-      });
-      empty.hidden = list.length !== 0;
-      updateCount(list.length);
-    }
-
-    function updateCount(n){
-      count.textContent = `${n ?? grid.children.length} GIFs`;
-    }
-
-    function applyFilter(){
-      const term = q.value.trim().toLowerCase();
-      const list = term ? GIFS.filter(g => g.tag.toLowerCase().includes(term)) : GIFS;
-      render(list);
-    }
-
-    document.getElementById('shuffle').addEventListener('click', ()=>{
-      shuffle(GIFS);
-      applyFilter();
-    });
-    q.addEventListener('input', applyFilter);
-
-    render(GIFS);
-  </script>
-</body>
+    <script src="game.js" defer></script>
+  </body>
 </html>
