@@ -101,11 +101,11 @@
     const element = inferElementFromPrompt(raw);
     const isEffective = element === TYPE_WEAKNESS[enemyType];
 
-    // Create projectile and animate
+    // Create projectile and animate once its image has loaded
     attackInFlight = true;
     sendBtn.disabled = true;
 
-    const proj = createProjectile(raw, element);
+    const { el: proj, img } = createProjectile(raw, element);
     playfield.appendChild(proj);
 
     const { targetLeft, targetTop } = getDemonTargetPoint();
@@ -114,37 +114,42 @@
     proj.style.left = `${start.left}px`;
     proj.style.top = `${start.top}px`;
 
-    // Force layout so the initial position is applied before transition
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    proj.offsetHeight;
+    const launch = () => {
+      // Force layout so the initial position is applied before transition
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      proj.offsetHeight;
 
-    proj.style.transition = "left 1400ms cubic-bezier(.2,.65,.3,1), top 1400ms cubic-bezier(.2,.65,.3,1)";
-    proj.style.left = `${targetLeft}px`;
-    proj.style.top = `${targetTop}px`;
+      proj.style.transition = "left 1400ms cubic-bezier(.2,.65,.3,1), top 1400ms cubic-bezier(.2,.65,.3,1)";
+      proj.style.left = `${targetLeft}px`;
+      proj.style.top = `${targetTop}px`;
 
-    const onArrive = () => {
-      proj.removeEventListener("transitionend", onArrive);
-      spawnExplosionAt(targetLeft + proj.offsetWidth / 2, targetTop + proj.offsetHeight / 2);
-      proj.remove();
+      const onArrive = () => {
+        spawnExplosionAt(targetLeft + proj.offsetWidth / 2, targetTop + proj.offsetHeight / 2);
+        proj.remove();
 
-      if (isEffective) {
-        enemyHP = Math.max(0, enemyHP - DAMAGE_PER_HIT);
-      } else {
-        playerHP = Math.max(0, playerHP - DAMAGE_PER_HIT);
-        flashDamage();
-      }
+        if (isEffective) {
+          enemyHP = Math.max(0, enemyHP - DAMAGE_PER_HIT);
+        } else {
+          playerHP = Math.max(0, playerHP - DAMAGE_PER_HIT);
+          flashDamage();
+        }
 
-      updateBars();
-      attackInFlight = false;
-      if (!promptInput.classList.contains("has-banned")) {
-        sendBtn.disabled = false;
-      }
+        updateBars();
+        attackInFlight = false;
+        if (!promptInput.classList.contains("has-banned")) {
+          sendBtn.disabled = false;
+        }
 
-      if (enemyHP <= 0) return endGame(true);
-      if (playerHP <= 0) return endGame(false);
+        if (enemyHP <= 0) return endGame(true);
+        if (playerHP <= 0) return endGame(false);
+      };
+
+      proj.addEventListener("transitionend", onArrive, { once: true });
     };
 
-    proj.addEventListener("transitionend", onArrive);
+    img.addEventListener("load", launch, { once: true });
+    img.addEventListener("error", launch, { once: true });
+    if (img.complete) launch();
 
     // Clear prompt for next input
     promptInput.value = "";
@@ -183,7 +188,7 @@
     label.className = "label";
     label.textContent = truncate(text, 22);
     el.appendChild(label);
-    return el;
+    return { el, img };
   }
 
   function spawnExplosionAt(x, y) {
