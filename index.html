@@ -13,29 +13,7 @@
         <div id="enemy-area">
           <div id="enemy">
             <div id="demon-sprite" aria-label="Demon" role="img">
-              <!-- Simple inline demon SVG -->
-              <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <defs>
-                  <linearGradient id="demonGrad" x1="0" x2="1" y1="0" y2="1">
-                    <stop offset="0%" stop-color="#3a0d0d" />
-                    <stop offset="100%" stop-color="#5a0f0f" />
-                  </linearGradient>
-                </defs>
-                <!-- Horns -->
-                <path d="M45 30 L65 5 L75 40 Z" fill="#2a0202" />
-                <path d="M155 30 L135 5 L125 40 Z" fill="#2a0202" />
-                <!-- Head -->
-                <ellipse cx="100" cy="70" rx="70" ry="55" fill="url(#demonGrad)" stroke="#000" stroke-width="2" />
-                <!-- Eyes -->
-                <ellipse cx="75" cy="65" rx="12" ry="10" fill="#ff3b3b" />
-                <ellipse cx="125" cy="65" rx="12" ry="10" fill="#ff3b3b" />
-                <circle cx="76" cy="65" r="4" fill="#000" />
-                <circle cx="124" cy="65" r="4" fill="#000" />
-                <!-- Mouth -->
-                <path d="M70 95 Q100 115 130 95" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round" />
-                <!-- Body shadow -->
-                <ellipse cx="100" cy="140" rx="45" ry="8" fill="#000" opacity="0.25" />
-              </svg>
+              <img id="demon-img" src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f479.svg" alt="Demon" />
             </div>
             <div id="enemy-type-badge" title="Enemy type"><span id="enemy-type-emoji">🔥</span></div>
           </div>
